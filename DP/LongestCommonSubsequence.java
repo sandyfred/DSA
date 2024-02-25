@@ -1,5 +1,4 @@
 /**
-Leetcode link: https://leetcode.com/problems/longest-common-subsequence
 Brute Force Approach
 Generate all subsequences of both strings. 2^N, 2^M
 Compare them and find the longest;
@@ -25,12 +24,40 @@ possible combinations of s1 and s2, worst case if both strings does not have any
 subsequence.
 
 So to minimize this, memoize it with a dp[][] matrix.
-Now, TC = O(N*M);
+Now, TC = O(N*M); SC = O(N*M) (FOR DP MATRIX) + O(N+M) (Stack Space for recursion);
+
+Tabulation:
+1. Base Case
+2. Shift indexes and start from 0 - Bottom Up
+3. Copy the recurrence relation and replace with dp[][].
+
+TC - O(N*M) SC - O(N*M) - Auxiliary Space removed
+
+Space Optimization - Can be space optimized since we're only using dp[i-1] ie prev
 
 */
 
 class Solution {
     public int longestCommonSubsequence(String text1, String text2) {
+        // Tabulation
+        int n = text1.length();
+        int m = text2.length();
+        int dp[][] = new int[n+1][m+1];
+
+        for(int i=1;i<=n;i++) {
+            for(int j=1;j<=m;j++) {
+                if(text1.charAt(i-1) == text2.charAt(j-1)) {
+                    dp[i][j] = 1 + dp[i-1][j-1];
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }            
+        }
+
+        return dp[n][m];
+  
+
+        /** Memoization
         int n = text1.length();
         int m = text2.length();
         int dp[][] = new int[n][m];
@@ -40,6 +67,7 @@ class Solution {
             }
         }
         return memo(text1, text2, n-1, m-1, dp);
+        */
     }
 
     private int memo(String text1, String text2, int i, int j, int dp[][]) {
